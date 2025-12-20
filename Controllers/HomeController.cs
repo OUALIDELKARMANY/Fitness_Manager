@@ -15,7 +15,8 @@ namespace Fitness_Manager.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Rediriger vers la page de connexion
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Privacy()

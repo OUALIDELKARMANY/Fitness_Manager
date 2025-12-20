@@ -1,0 +1,635 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Dashboard Client";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - ELITE FIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand i {
+            font-size: 28px;
+            color: #D4AF37;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #D4AF37;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #D4AF37;
+            font-weight: 600;
+        }
+
+        .logout-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .logout-link:hover {
+            border-color: #D4AF37;
+            color: #D4AF37;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), 
+                        url('/images/fitness-dashboard.png') center/cover fixed;
+        }
+
+        .hero-content {
+            padding: 0 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 0, 0, 0.8);
+            padding: 6px 15px;
+            margin-bottom: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero-label i {
+            color: #fff;
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 140px;
+            line-height: 0.9;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .hero-subtitle {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: #D4AF37;
+            color: #000;
+            padding: 18px 45px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .hero-btn:hover {
+            background: #f0c24b;
+            transform: translateX(5px);
+        }
+
+        /* Mission Section */
+        .mission-section {
+            padding: 120px 60px;
+            background: #fff;
+            color: #000;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .info-card {
+            position: relative;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            margin-bottom: 25px;
+        }
+
+        .card-label {
+            color: #ff0000;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #000;
+            margin-bottom: 20px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* Programs Section */
+        .programs-section {
+            padding: 120px 60px;
+            background: #000;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            color: #ff0000;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .program-card {
+            position: relative;
+            height: 450px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .program-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .program-card:hover .program-image {
+            transform: scale(1.1);
+        }
+
+        .program-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            padding: 40px 30px;
+        }
+
+        .program-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .program-link {
+            color: #D4AF37;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Full Image Section */
+        .fullimage-section {
+            height: 90vh;
+            background: url('/images/fitness-man.png') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .fullimage-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .fullimage-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 0 60px;
+        }
+
+        .fullimage-label {
+            color: #ff0000;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .fullimage-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 100px;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 120px 60px;
+            background: #fff;
+            color: #000;
+        }
+
+        .stats-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .stats-info h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            color: #000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .stats-label {
+            color: #ff0000;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .stats-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .stat-box {
+            background: #f5f5f5;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 56px;
+            color: #D4AF37;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            padding: 80px 60px;
+            background: #000;
+            text-align: center;
+        }
+
+        .footer-cta h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 56px;
+            color: #fff;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @@media (max-width: 968px) {
+            .hero-title {
+                font-size: 80px;
+            }
+
+            .section-grid,
+            .stats-content {
+                grid-template-columns: 1fr;
+            }
+
+            .programs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 50px;
+            }
+
+            .hero-subtitle {
+                font-size: 40px;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-dumbbell"></i>
+            <span class="brand-name">ELITE FIT</span>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a href="/Client/Dashboard">HOME</a></li>
+            <li><a href="/Client/Profile">PROFIL</a></li>
+            <li><a href="/Client/WorkoutPlan">ENTRAÎNEMENT</a></li>
+            <li><a href="/Client/NutritionPlan">NUTRITION</a></li>
+            <li><a href="/Client/Progress">PROGRESSION</a></li>
+        </ul>
+
+        <div class="nav-right">
+            <span class="user-badge">@ViewBag.UserName</span>
+            <a href="/Account/Logout" class="logout-link">Déconnexion</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-label">
+                <i class="fas fa-fire"></i>
+                <span>ELITE FIT 100%</span>
+            </div>
+            <h1 class="hero-title">VOTRE<br>TRANSFORMATION</h1>
+            <p class="hero-subtitle">COMMENCE ICI</p>
+            <a href="/Client/Profile" class="hero-btn">Commencer Maintenant</a>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="section-grid">
+            <div class="info-card">
+                <img src="/images/fitness-man.png" alt="Profil" class="card-image">
+                <div class="card-label">VOTRE PROFIL</div>
+                <h3 class="card-title">GÉREZ VOS INFOS</h3>
+                <p class="card-description">
+                    Personnalisez votre profil, définissez vos objectifs et suivez votre IMC. 
+                    Toutes vos informations en un seul endroit pour une progression optimale.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <img src="/images/fitness-duo.png" alt="Entraînement" class="card-image">
+                <div class="card-label">ENTRAÎNEMENT</div>
+                <h3 class="card-title">PLAN SPORTIF</h3>
+                <p class="card-description">
+                    Accédez à vos séances personnalisées créées par votre coach. 
+                    Suivez vos exercices et validez vos entraînements complétés.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <img src="/images/fitness-man.png" alt="Nutrition" class="card-image">
+                <div class="card-label">NUTRITION</div>
+                <h3 class="card-title">ALIMENTATION</h3>
+                <p class="card-description">
+                    Consultez votre plan nutritionnel adapté à vos objectifs. 
+                    Suivez vos calories quotidiennes et ajoutez vos repas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section class="programs-section">
+        <div class="section-header">
+            <div class="section-label">VOS OUTILS ELITE</div>
+            <h2 class="section-title">NOS SERVICES</h2>
+        </div>
+
+        <div class="programs-grid">
+            <a href="/Client/Profile" class="program-card">
+                <img src="/images/fitness-man.png" alt="Profil" class="program-image">
+                <div class="program-overlay">
+                    <h4 class="program-name">PROFIL</h4>
+                    <span class="program-link">Gérer →</span>
+                </div>
+            </a>
+
+            <a href="/Client/WorkoutPlan" class="program-card">
+                <img src="/images/fitness-duo.png" alt="Workout" class="program-image">
+                <div class="program-overlay">
+                    <h4 class="program-name">ENTRAÎNEMENT</h4>
+                    <span class="program-link">Consulter →</span>
+                </div>
+            </a>
+
+            <a href="/Client/NutritionPlan" class="program-card">
+                <img src="/images/fitness-man.png" alt="Nutrition" class="program-image">
+                <div class="program-overlay">
+                    <h4 class="program-name">NUTRITION</h4>
+                    <span class="program-link">Découvrir →</span>
+                </div>
+            </a>
+
+            <a href="/Client/Progress" class="program-card">
+                <img src="/images/fitness-duo.png" alt="Progress" class="program-image">
+                <div class="program-overlay">
+                    <h4 class="program-name">PROGRESSION</h4>
+                    <span class="program-link">Analyser →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Full Image Section -->
+    <section class="fullimage-section">
+        <div class="fullimage-overlay"></div>
+        <div class="fullimage-content">
+            <div class="fullimage-label">TRANSFORMEZ VOTRE VIE</div>
+            <h2 class="fullimage-title">DÉPASSEZ<br>VOS LIMITES</h2>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-content">
+            <div class="stats-info">
+                <div class="stats-label">VOS STATISTIQUES</div>
+                <h2>SUIVEZ VOTRE PROGRESSION</h2>
+                <p class="stats-description">
+                    Analysez vos performances grâce à nos outils de suivi détaillés. 
+                    Visualisez votre évolution et atteignez vos objectifs fitness.
+                </p>
+                <a href="/Client/Progress" class="hero-btn">Voir Mes Stats</a>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Séances Complétées</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Jours Actifs</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Calories Brûlées</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Objectif Atteint %</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="footer-cta">
+        <h3>PRÊT À COMMENCER ?</h3>
+        <a href="/Client/Profile" class="hero-btn">Accéder À Mon Profil</a>
+    </section>
+</body>
+</html>

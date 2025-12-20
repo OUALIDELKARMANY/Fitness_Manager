@@ -1,0 +1,275 @@
+﻿:root {
+    --luxe-gold: #D4AF37;
+    --luxe-dark: #0A0A0A;
+    --luxe-dark-light: #1A1A1A;
+    --luxe-light: #F8F9FA;
+    --luxe-gray: #2C2C2C;
+    --luxe-gradient: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+}
+
+.login-page {
+    min-height: 100vh;
+    background: var(--luxe-gradient), url('/images/luxury-gym-background.jpg') no-repeat center center;
+    background-size: cover;
+    background-blend-mode: overlay;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.login-container {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.login-card {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--luxe-gold);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.login-header {
+    background: rgba(212, 175, 55, 0.1);
+    padding: 2.5rem;
+    text-align: center;
+    border-bottom: 2px solid var(--luxe-gold);
+}
+
+.brand-logo {
+    font-size: 2.5rem;
+    color: var(--luxe-gold);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+    .brand-logo i {
+        font-size: 3rem;
+    }
+
+.brand-name {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-tagline {
+    color: rgba(248, 249, 250, 0.7);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.login-body {
+    padding: 2.5rem;
+}
+
+.form-group-luxe {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-luxe {
+    color: var(--luxe-light);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-control-luxe {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    color: var(--luxe-light);
+    padding: 14px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+    .form-control-luxe:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--luxe-gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        color: var(--luxe-light);
+    }
+
+    .form-control-luxe::placeholder {
+        color: rgba(248, 249, 250, 0.4);
+    }
+
+.checkbox-luxe {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .checkbox-luxe input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--luxe-gold);
+        cursor: pointer;
+    }
+
+    .checkbox-luxe label {
+        color: var(--luxe-light);
+        cursor: pointer;
+        user-select: none;
+    }
+
+.forgot-password {
+    color: var(--luxe-gold);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+    .forgot-password:hover {
+        color: #FFD700;
+        text-decoration: underline;
+    }
+
+.btn-login {
+    background: linear-gradient(45deg, var(--luxe-gold), #FFD700);
+    border: none;
+    color: var(--luxe-dark);
+    font-weight: 600;
+    padding: 16px 40px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+.login-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.register-link {
+    color: var(--luxe-light);
+    margin-bottom: 1.5rem;
+}
+
+    .register-link a {
+        color: var(--luxe-gold);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .register-link a:hover {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+
+.terms-links {
+    color: rgba(248, 249, 250, 0.5);
+    font-size: 0.85rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .terms-links a {
+        color: rgba(248, 249, 250, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .terms-links a:hover {
+            color: var(--luxe-gold);
+            text-decoration: underline;
+        }
+
+    .terms-links span {
+        margin: 0 10px;
+        color: rgba(248, 249, 250, 0.3);
+    }
+
+.error-message {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 1.5rem;
+    color: #f8d7da;
+    animation: shake 0.5s ease-in-out;
+}
+
+.input-icon {
+    position: relative;
+}
+
+    .input-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--luxe-gold);
+        z-index: 2;
+    }
+
+    .input-icon input {
+        padding-left: 45px;
+    }
+
+@media (max-width: 576px) {
+    .login-card {
+        margin: 0 1rem;
+    }
+
+    .login-header,
+    .login-body {
+        padding: 1.5rem;
+    }
+
+    .brand-logo {
+        font-size: 2rem;
+    }
+}

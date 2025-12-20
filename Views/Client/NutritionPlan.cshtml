@@ -1,0 +1,396 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Plan Nutritionnel";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - ELITE FIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding-top: 80px;
+            color: #fff;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand i {
+            font-size: 28px;
+            color: #D4AF37;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #D4AF37;
+        }
+
+        .back-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #D4AF37;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+        }
+
+        /* Calories Summary */
+        .calories-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .calorie-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .calorie-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .calorie-card.recommended .calorie-icon {
+            color: #D4AF37;
+        }
+
+        .calorie-card.consumed .calorie-icon {
+            color: #28a745;
+        }
+
+        .calorie-card.remaining .calorie-icon {
+            color: #17a2b8;
+        }
+
+        .calorie-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .calorie-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* No Plan Message */
+        .no-plan {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .no-plan-icon {
+            font-size: 64px;
+            color: #D4AF37;
+            margin-bottom: 20px;
+        }
+
+        .no-plan-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .no-plan-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Meal Cards */
+        .meals-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .meal-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .meal-card:hover {
+            border-color: #D4AF37;
+            transform: translateY(-3px);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .meal-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #D4AF37;
+        }
+
+        .meal-time {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #D4AF37;
+        }
+
+        .food-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .food-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .food-name {
+            font-weight: 500;
+        }
+
+        .food-calories {
+            color: #D4AF37;
+            font-weight: 600;
+        }
+
+        .add-meal-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #b8941f 100%);
+            border: none;
+            border-radius: 12px;
+            color: #1a1a2e;
+            padding: 14px 28px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .add-meal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        @@media (max-width: 768px) {
+            .calories-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-dumbbell"></i>
+            <span class="brand-name">ELITE FIT</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/Client/Dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/Client/Profile"><i class="fas fa-user"></i> Mon Profil</a>
+            <a href="/Client/WorkoutPlan"><i class="fas fa-running"></i> Plan Sportif</a>
+            <a href="/Client/NutritionPlan" class="active"><i class="fas fa-utensils"></i> Nutrition</a>
+            <a href="/Client/Progress"><i class="fas fa-chart-line"></i> Progression</a>
+        </div>
+
+        <a href="/Client/Dashboard" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Plan Nutritionnel</h1>
+            <p class="page-subtitle">Suivez vos repas et gérez vos calories</p>
+        </div>
+
+        <!-- Résumé des calories -->
+        <div class="calories-summary">
+            <div class="calorie-card recommended">
+                <div class="calorie-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="calorie-value">2200</div>
+                <div class="calorie-label">Recommandées</div>
+            </div>
+
+            <div class="calorie-card consumed">
+                <div class="calorie-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="calorie-value">0</div>
+                <div class="calorie-label">Consommées</div>
+            </div>
+
+            <div class="calorie-card remaining">
+                <div class="calorie-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="calorie-value">2200</div>
+                <div class="calorie-label">Restantes</div>
+            </div>
+        </div>
+
+        <!-- Message si pas de plan -->
+        <div class="no-plan">
+            <div class="no-plan-icon">
+                <i class="fas fa-apple-alt"></i>
+            </div>
+            <h2 class="no-plan-title">Aucun plan nutritionnel assigné</h2>
+            <p class="no-plan-text">
+                Votre coach n'a pas encore créé de plan nutritionnel pour vous.<br>
+                Contactez votre coach pour obtenir des recommandations alimentaires adaptées à vos objectifs.
+            </p>
+        </div>
+
+        <!-- Bouton pour ajouter un repas manuellement -->
+        <div style="text-align: center;">
+            <button class="add-meal-btn">
+                <i class="fas fa-plus-circle"></i> Ajouter un repas consommé
+            </button>
+        </div>
+
+        <!-- Exemple de structure pour quand le plan sera disponible -->
+        <!--
+        <div class="meals-grid">
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-name">Petit-déjeuner</div>
+                    <div class="meal-time">08:00</div>
+                </div>
+
+                <ul class="food-list">
+                    <li class="food-item">
+                        <span class="food-name">Flocons d'avoine (80g)</span>
+                        <span class="food-calories">280 kcal</span>
+                    </li>
+                    <li class="food-item">
+                        <span class="food-name">Banane (1 unité)</span>
+                        <span class="food-calories">105 kcal</span>
+                    </li>
+                    <li class="food-item">
+                        <span class="food-name">Lait écrémé (250ml)</span>
+                        <span class="food-calories">85 kcal</span>
+                    </li>
+                </ul>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px;">
+                    <strong>Total: <span style="color: #D4AF37;">470 kcal</span></strong>
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+</body>
+</html>

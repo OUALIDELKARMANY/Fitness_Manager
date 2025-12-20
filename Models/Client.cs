@@ -1,22 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Fitness_Manager.Models
 {
-    public class Client : Utilisateur  
+    public class Client : Utilisateur
     {
-        public int Age { get; set; }
-        public double Taille { get; set; } 
-        public double PoidsActuel { get; set; }
+        // Date d'inscription spécifique au client
+        public DateTime DateInscription { get; set; } = DateTime.Now;
 
-        public int CoachId { get; set; } // clé étrangère
-        public Coach Coach { get; set; }
+        // Propriétés démographiques
+        public int? Age { get; set; } // Ajoutez cette propriété
 
-        public PlanSportif PlanSportif { get; set; } // Chaque client a un plan sportif
-        public PlanNutritionnel PlanNutritionnel { get; set; }
+        // Propriétés physiques
+        public decimal? Poids { get; set; }
+        public decimal? PoidsActuel { get; set; } // Ajoutez cette propriété
+        public decimal? Taille { get; set; }
+        public string? Objectif { get; set; }
 
-        public List<SuiviPoids> SuiviPoids { get; set; }
-        public List<Notification> Notifications { get; set; }
-        public List<Rapport> Rapports { get; set; }
+        // Fréquence d'entraînement
+        public int? FrequenceEntrainement { get; set; }
 
+        // Relations
+        public int? CoachId { get; set; }
+        public virtual Coach? Coach { get; set; }
+
+        public int? PlanSportifId { get; set; }
+        public virtual PlanSportif? PlanSportif { get; set; }
+
+        public int? PlanNutritionnelId { get; set; }
+        public virtual PlanNutritionnel? PlanNutritionnel { get; set; }
+
+        // Collections
+        public virtual ICollection<SuiviPoids> SuiviPoids { get; set; } = new List<SuiviPoids>();
+        public virtual ICollection<Rapport> Rapports { get; set; } = new List<Rapport>();
+        public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
 }

@@ -1,0 +1,334 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Plan Sportif";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - ELITE FIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding-top: 80px;
+            color: #fff;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand i {
+            font-size: 28px;
+            color: #D4AF37;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #D4AF37;
+        }
+
+        .back-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #D4AF37;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+        }
+
+        /* No Plan Message */
+        .no-plan {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .no-plan-icon {
+            font-size: 64px;
+            color: #D4AF37;
+            margin-bottom: 20px;
+        }
+
+        .no-plan-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .no-plan-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Workout Sessions */
+        .workout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .session-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .session-card:hover {
+            transform: translateY(-5px);
+            border-color: #D4AF37;
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .session-header {
+            display: flex;
+            justify-co: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .session-day {
+            font-size: 20px;
+            font-weight: 600;
+            color: #D4AF37;
+        }
+
+        .session-badge {
+            background: rgba(212, 175, 55, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #D4AF37;
+        }
+
+        .exercise-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .exercise-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #D4AF37 0%, #b8941f 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #1a1a2e;
+        }
+
+        .exercise-info {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .exercise-details {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .validate-btn {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            padding: 12px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .validate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .validate-btn.completed {
+            background: rgba(40, 167, 69, 0.3);
+            cursor: default;
+        }
+
+        @@media (max-width: 768px) {
+            .workout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-dumbbell"></i>
+            <span class="brand-name">ELITE FIT</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/Client/Dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/Client/Profile"><i class="fas fa-user"></i> Mon Profil</a>
+            <a href="/Client/WorkoutPlan" class="active"><i class="fas fa-running"></i> Plan Sportif</a>
+            <a href="/Client/NutritionPlan"><i class="fas fa-utensils"></i> Nutrition</a>
+            <a href="/Client/Progress"><i class="fas fa-chart-line"></i> Progression</a>
+        </div>
+
+        <a href="/Client/Dashboard" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Mon Plan Sportif</h1>
+            <p class="page-subtitle">Consultez vos séances et validez vos progrès</p>
+        </div>
+
+        <!-- Message si pas de plan assigné -->
+        <div class="no-plan">
+            <div class="no-plan-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h2 class="no-plan-title">Aucun plan sportif assigné</h2>
+            <p class="no-plan-text">
+                Votre coach n'a pas encore créé de plan sportif pour vous.<br>
+                Contactez votre coach pour obtenir un programme personnalisé adapté à vos objectifs.
+            </p>
+        </div>
+
+        <!-- Exemple de structure pour quand le plan sera disponible -->
+        <!-- 
+        <div class="workout-grid">
+            <div class="session-card">
+                <div class="session-header">
+                    <div class="session-day">Lundi - Haut du corps</div>
+                    <div class="session-badge">60 min</div>
+                </div>
+
+                <ul class="exercise-list">
+                    <li class="exercise-item">
+                        <div class="exercise-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="exercise-info">
+                            <div class="exercise-name">Développé couché</div>
+                            <div class="exercise-details">4 séries × 12 répétitions</div>
+                        </div>
+                    </li>
+                </ul>
+
+                <button class="validate-btn">
+                    <i class="fas fa-check"></i> Valider la séance
+                </button>
+            </div>
+        </div>
+        -->
+    </div>
+</body>
+</html>
