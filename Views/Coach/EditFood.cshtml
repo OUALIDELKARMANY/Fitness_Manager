@@ -1,0 +1,128 @@
+@model Fitness_Manager.Models.Aliment
+@{
+    ViewData["Title"] = "Modifier Aliment";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item"><i class="fas fa-users"></i><span>Clients</span></a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item"><i class="fas fa-running"></i><span>Plans d'Entraînement</span></a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item active"><i class="fas fa-apple-alt"></i><span>Pl ans Nutritionnels</span></a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item"><i class="fas fa-chart-line"></i><span>Rapports</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("ManageFoods", "Coach", new { planId = ViewBag.PlanId })" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>Modifier Aliment</h1>
+                        <p class="header-subtitle">Mettre à jour les informations nutritionnelles</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="form-section">
+                <div class="form-container">
+                    <form method="post" asp-action="EditFood">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="PlanNutritionnelId" />
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label asp-for="Nom">Nom de l'aliment *</label>
+                                <input asp-for="Nom" class="form-control" placeholder="Ex: Poulet grillé" required />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Type">Type</label>
+                                <select asp-for="Type" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Protéine">Protéine</option>
+                                    <option value="Glucide">Glucide</option>
+                                    <option value="Légume">Légume</option>
+                                    <option value="Fruit">Fruit</option>
+                                    <option value="Produit laitier">Produit laitier</option>
+                                    <option value="Matière grasse">Matière grasse</option>
+                                    <option value="Boisson">Boisson</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Calories">Calories (kcal)</label>
+                                <input asp-for="Calories" type="number" step="0.01" class="form-control" placeholder="150" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Proteines">Protéines (g)</label>
+                                <input asp-for="Proteines" type="number" step="0.01" class="form-control" placeholder="25" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Glucides">Glucides (g)</label>
+                                <input asp-for="Glucides" type="number" step="0.01" class="form-control" placeholder="30" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Lipides">Lipides (g)</label>
+                                <input asp-for="Lipides" type="number" step="0.01" class="form-control" placeholder="10" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Portion">Portion</label>
+                                <input asp-for="Portion" class="form-control" placeholder="Ex: 100g, 1 pièce..." />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="MomentConsommation">Moment de consommation</label>
+                                <select asp-for="MomentConsommation" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Petit-déjeuner">Petit-déjeuner</option>
+                                    <option value="Collation matin">Collation matin</option>
+                                    <option value="Déjeuner">Déjeuner</option>
+                                    <option value="Collation après-midi">Collation après-midi</option>
+                                    <option value="Dîner">Dîner</option>
+                                    <option value="Collation soir">Collation soir</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="@Url.Action("ManageFoods", "Coach", new { planId = ViewBag.PlanId })" class="btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+@model List<Fitness_Manager.Models.Client>
+@{
+    ViewData["Title"] = "Gestion des Clients";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <h1>Gestion des Clients</h1>
+                        <p class="header-subtitle">Gérez et suivez vos clients</p>
+                    </div>
+                    <a href="@Url.Action("AddClient", "Coach")" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Ajouter un Client
+                    </a>
+                </div>
+            </header>
+
+            <!-- Search and Filter Bar -->
+            <section class="filter-section">
+                <form method="get" asp-action="Clients" class="search-form">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="search" placeholder="Rechercher un client (nom, prénom, email)..." value="@ViewBag.SearchQuery">
+                        <button type="submit" class="btn-primary">Rechercher</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Clients Grid -->
+            <section class="content-section">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> @TempData["Success"]
+                    </div>
+                }
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="clients-grid">
+                        @foreach (var client in Model)
+                        {
+                            <div class="client-card">
+                                <div class="client-card-header">
+                                    <div class="client-avatar-large">
+                                        @client.Prenom[0]@client.Nom[0]
+                                    </div>
+                                    <h3>@client.Prenom @client.Nom</h3>
+                                    <p class="client-email">@client.Email</p>
+                                </div>
+                                
+                                <div class="client-card-body">
+                                    <div class="client-stat">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span>Inscrit le @client.DateInscription.ToShortDateString()</span>
+                                    </div>
+                                    
+                                    @if (client.Age.HasValue)
+                                    {
+                                        <div class="client-stat">
+                                            <i class="fas fa-user"></i>
+                                            <span>@client.Age ans</span>
+                                        </div>
+                                    }
+                                    
+                                    @if (client.Objectif != null)
+                                    {
+                                        <div class="client-stat">
+                                            <i class="fas fa-bullseye"></i>
+                                            <span>@client.Objectif</span>
+                                        </div>
+                                    }
+                                    
+                                    <div class="client-plans">
+                                        <div class="plan-badge">
+                                            @if (client.PlanSportifId.HasValue)
+                                            {
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-dumbbell"></i> Plan Sportif
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-secondary">
+                                                    <i class="fas fa-times"></i> Pas de plan sportif
+                                                </span>
+                                            }
+                                        </div>
+                                        <div class="plan-badge">
+                                            @if (client.PlanNutritionnelId.HasValue)
+                                            {
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-apple-alt"></i> Plan Nutritionnel
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-secondary">
+                                                    <i class="fas fa-times"></i> Pas de plan nutritionnel
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="client-card-footer">
+                                    <a href="@Url.Action("ClientDetails", "Coach", new { id = client.Id })" class="btn-primary btn-block">
+                                        <i class="fas fa-eye"></i> Voir Détails
+                                    </a>
+                                    <a href="@Url.Action("ClientProgress", "Coach", new { clientId = client.Id })" class="btn-secondary btn-block">
+                                        <i class="fas fa-chart-line"></i> Progression
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>Aucun client trouvé</h3>
+                        <p>@(ViewBag.SearchQuery != null ? "Essayez une autre recherche" : "Vous n'avez pas encore de clients")</p>
+                    </div>
+                }
+            </section>
+        </main>
+    </div>
+
+    <script src="~/js/coach-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+@model Fitness_Manager.Models.Client
+@{
+    ViewData["Title"] = "Modifier Client";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("ClientDetails", "Coach", new { id = Model.Id })" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>Modifier Client</h1>
+                        <p class="header-subtitle">Mettre à jour les informations de @Model.Prenom @Model.Nom</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="form-section">
+                <div class="form-container">
+                    <form method="post" asp-action="EditClient">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Email" />
+                        <input type="hidden" asp-for="Password" />
+                        <input type="hidden" asp-for="DateInscription" />
+                        <input type="hidden" asp-for="CoachId" />
+                        <input type="hidden" asp-for="PlanSportifId" />
+                        <input type="hidden" asp-for="PlanNutritionnelId" />
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Nom">
+                                    <i class="fas fa-user"></i> Nom
+                                </label>
+                                <input asp-for="Nom" class="form-control" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Prenom">
+                                    <i class="fas fa-user"></i> Prénom
+                                </label>
+                                <input asp-for="Prenom" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Age">
+                                    <i class="fas fa-birthday-cake"></i> Âge
+                                </label>
+                                <input asp-for="Age" type="number" class="form-control" min="10" max="120" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Sexe">
+                                    <i class="fas fa-venus-mars"></i> Sexe
+                                </label>
+                                <select asp-for="Sexe" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Homme">Homme</option>
+                                    <option value="Femme">Femme</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Poids">
+                                    <i class="fas fa-weight"></i> Poids (kg)
+                                </label>
+                                <input asp-for="Poids" type="number" step="0.1" class="form-control" min="20" max="300" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="PoidsActuel">
+                                    <i class="fas fa-weight"></i> Poids Actuel (kg)
+                                </label>
+                                <input asp-for="PoidsActuel" type="number" step="0.1" class="form-control" min="20" max="300" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Taille">
+                                    <i class="fas fa-ruler-vertical"></i> Taille (cm)
+                                </label>
+                                <input asp-for="Taille" type="number" step="0.1" class="form-control" min="100" max="250" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Objectif">
+                                <i class="fas fa-bullseye"></i> Objectif
+                            </label>
+                            <select asp-for="Objectif" class="form-control">
+                                <option value="">-- Sélect ionner --</option>
+                                <option value="Perte de poids">Perte de poids</option>
+                                <option value="Prise de muscle">Prise de muscle</option>
+                                <option value="Maintien de forme">Maintien de forme</option>
+                                <option value="Amélioration endurance">Amélioration endurance</option>
+                                <option value="Santé générale">Santé générale</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FrequenceEntrainement">
+                                <i class="fas fa-calendar-alt"></i> Fréquence d'Entraînement (fois/semaine)
+                            </label>
+                            <input asp-for="FrequenceEntrainement" type="number" class="form-control" min="1" max="7" />
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="@Url.Action("ClientDetails", "Coach", new { id = Model.Id })" class="btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les Modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

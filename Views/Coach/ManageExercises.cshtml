@@ -1,0 +1,202 @@
+@model List<Fitness_Manager.Models.Exercice>
+@{
+    ViewData["Title"] = "Gérer les Exercices";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item active">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("ManageSessions", "Coach", new { planId = ViewBag.PlanId })" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>@ViewBag.SessionName</h1>
+                        <p class="header-subtitle">Gérer les exercices</p>
+                    </div>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+
+            <!-- Add Exercise Form -->
+            <section class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> Ajouter un Exercice</h2>
+                <form method="post" asp-action="AddExercise" asp-route-sessionId="@ViewBag.SessionId">
+                    @Html.AntiForgeryToken()
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nom de l'exercice *</label>
+                            <input type="text" name="Nom" class="form-control" placeholder="Ex: Développé couché" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Matériel</label>
+                            <input type="text" name="Materiel" class="form-control" placeholder="Ex: Haltères, Barre..." />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Séries</label>
+                            <input type="number" name="Sets" class="form-control" placeholder="3" min="1" />
+                        </div>
+                        <div class="form-group">
+                            <label>Répétitions</label>
+                            <input type="number" name="Repetitions" class="form-control" placeholder="12" min="1" />
+                        </div>
+                        <div class="form-group">
+                            <label>Repos (sec)</label>
+                            <input type="number" name="ReposSecondes" class="form-control" placeholder="60" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>Durée (sec)</label>
+                            <input type="number" name="DureeSecondes" class="form-control" placeholder="30" min="0" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="Description" class="form-control" rows="2" placeholder="Description courte..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Instructions</label>
+                        <textarea name="Instructions" class="form-control" rows="3" placeholder="Instructions détaillées pour réaliser l'exercice..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Ajouter l'Exercice
+                    </button>
+                </form>
+            </section>
+
+            <!-- Exercises List -->
+            <section class="content-section">
+                <h2>Liste des Exercices</h2>
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="exercises-list">
+                        @foreach (var exercice in Model)
+                        {
+                            <div class="exercise-card">
+                                <div class="exercise-header">
+                                    <h3><i class="fas fa-dumbbell"></i> @exercice.Nom</h3>
+                                    <form method="post" asp-action="DeleteExercise" asp-route-id="@exercice.Id" asp-route-sessionId="@ViewBag.SessionId" style="display:inline;" onsubmit="return confirm('Supprimer cet exercice ?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                @if (exercice.Description != null)
+                                {
+                                    <p class="exercise-description">@exercice.Description</p>
+                                }
+
+                                <div class="exercise-details">
+                                    @if (exercice.Sets.HasValue || exercice.Repetitions.HasValue)
+                                    {
+                                        <span class="detail-badge">
+                                            <i class="fas fa-redo"></i> @exercice.Sets x @exercice.Repetitions reps
+                                        </span>
+                                    }
+                                    @if (exercice.ReposSecondes.HasValue)
+                                    {
+                                        <span class="detail-badge">
+                                            <i class="fas fa-pause"></i> @exercice.ReposSecondes sec repos
+                                        </span>
+                                    }
+                                    @if (exercice.DureeSecondes.HasValue)
+                                    {
+                                        <span class="detail-badge">
+                                            <i class="fas fa-clock"></i> @exercice.DureeSecondes sec
+                                        </span>
+                                    }
+                                    @if (exercice.Materiel != null)
+                                    {
+                                        <span class="detail-badge">
+                                            <i class="fas fa-tools"></i> @exercice.Materiel
+                                        </span>
+                                    }
+                                </div>
+
+                                @if (exercice.Instructions != null)
+                                {
+                                    <div class="exercise-instructions">
+                                        <strong>Instructions:</strong>
+                                        <p>@exercice.Instructions</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-dumbbell"></i>
+                        <h3>Aucun exercice</h3>
+                        <p>Ajoutez des exercices à cette séance</p>
+                    </div>
+                }
+            </section>
+        </main>
+    </div>
+</body>
+</html>

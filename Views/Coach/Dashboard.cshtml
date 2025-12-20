@@ -1,0 +1,237 @@
+@{
+    ViewData["Title"] = "Coach Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <h1>Bienvenue, @ViewBag.CoachName</h1>
+                        <p class="header-subtitle">Gérez vos clients et leurs programmes</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-icon" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Statistics Cards -->
+            <section class="stats-grid">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>@ViewBag.TotalClients</h3>
+                        <p>Clients Actifs</p>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 12%
+                    </div>
+                </div>
+
+                <div class="stat-card stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>@ViewBag.ActiveWorkoutPlans</h3>
+                        <p>Plans Sportifs</p>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 8%
+                    </div>
+                </div>
+
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>@ViewBag.ActiveNutritionPlans</h3>
+                        <p>Plans Nutritionnels</p>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 5%
+                    </div>
+                </div>
+
+                <div class="stat-card stat-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>@ViewBag.TotalReports</h3>
+                        <p>Rapports</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-minus"></i> 0%
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2 class="section-title">Actions Rapides</h2>
+                <div class="actions-grid">
+                    <a href="@Url.Action("CreateWorkoutPlan", "Coach")" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Créer un Plan Sportif</h3>
+                        <p>Nouveau programme d'entraînement</p>
+                    </a>
+                    <a href="@Url.Action("CreateNutritionPlan", "Coach")" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Créer un Plan Nutritionnel</h3>
+                        <p>Nouveau plan alimentaire</p>
+                    </a>
+                    <a href="@Url.Action("Clients", "Coach")" class="action-card">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Voir les Clients</h3>
+                        <p>Gérer vos clients</p>
+                    </a>
+                    <a href="@Url.Action("Reports", "Coach")" class="action-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Générer un Rapport</h3>
+                        <p>Analyse de progression</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Recent Clients -->
+            <section class="recent-section">
+                <div class="section-header">
+                    <h2 class="section-title">Clients Récents</h2>
+                    <a href="@Url.Action("Clients", "Coach")" class="btn-link">Voir tout <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="clients-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Email</th>
+                                <th>Inscription</th>
+                                <th>Plan Sportif</th>
+                                <th>Plan Nutritionnel</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.RecentClients != null && ViewBag.RecentClients.Count > 0)
+                            {
+                                foreach (var client in ViewBag.RecentClients)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="client-info">
+                                                <div class="avatar">
+                                                    @(string.IsNullOrEmpty(client.Prenom) || string.IsNullOrEmpty(client.Nom) ? "?" : $"{client.Prenom[0]}{client.Nom[0]}")
+                                                </div>
+                                                <span>@(client.Prenom ?? "") @(client.Nom ?? "")</span>
+                                            </div>
+                                        </td>
+                                        <td>@(client.Email ?? "")</td>
+                                        <td>@client.DateInscription.ToShortDateString()</td>
+                                        <td>
+                                            @if (client.PlanSportifId != null && client.PlanSportifId.HasValue)
+                                            {
+                                                <span class="badge badge-success">Assigné</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-secondary">Non assigné</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (client.PlanNutritionnelId != null && client.PlanNutritionnelId.HasValue)
+                                            {
+                                                <span class="badge badge-success">Assigné</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-secondary">Non assigné</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("ClientDetails", "Coach", new { id = client.Id })" class="btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i> Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucun client récent</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="~/js/coach-dashboard.js"></script>
+</body>
+</html>

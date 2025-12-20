@@ -162,6 +162,7 @@ namespace Fitness_Manager.Controllers
                     Prenom = prenom,
                     DateInscription = DateTime.Now,
                     DateCreation = DateTime.Now
+                    // CoachId reste NULL - tous les coaches peuvent voir tous les clients
                 };
                 _context.Clients.Add(client);
 

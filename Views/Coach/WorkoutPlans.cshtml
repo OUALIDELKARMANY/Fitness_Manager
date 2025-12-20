@@ -1,0 +1,138 @@
+@model List<Fitness_Manager.Models.PlanSportif>
+@{
+    ViewData["Title"] = "Plans d'Entraînement";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item active">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <h1>Plans d'Entraînement</h1>
+                        <p class="header-subtitle">Créez et gérez vos programmes sportifs</p>
+                    </div>
+                    <a href="@Url.Action("CreateWorkoutPlan", "Coach")" class="btn-primary">
+                        <i class="fas fa-plus"></i> Créer un Plan
+                    </a>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+
+            <section class="content-section">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="plans-grid">
+                        @foreach (var plan in Model)
+                        {
+                            <div class="plan-card">
+                                <div class="plan-card-header">
+                                    <h3>@plan.Nom</h3>
+                                    @if (plan.Niveau != null)
+                                    {
+                                        <span class="badge badge-@(plan.Niveau.ToLower())">@plan.Niveau</span>
+                                    }
+                                </div>
+                                
+                                <p class="plan-description">@(plan.Description ?? "Aucune description")</p>
+                                
+                                <div class="plan-stats">
+                                    <div class="stat">
+                                        <i class="fas fa-clock"></i>
+                                        <span>@(plan.DureeSemaines ?? 0) semaines</span>
+                                    </div>
+                                    <div class="stat">
+                                        <i class="fas fa-list"></i>
+                                        <span>@plan.Seances.Count séances</span>
+                                    </div>
+                                </div>
+
+                                <div class="plan-actions">
+                                    <a href="@Url.Action("ManageSessions", "Coach", new { planId = plan.Id })" class="btn-secondary">
+                                        <i class="fas fa-cog"></i> Gérer Séances
+                                    </a>
+                                    <a href="@Url.Action("EditWorkoutPlan", "Coach", new { id = plan.Id })" class="btn-icon" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" asp-action="DeleteWorkoutPlan" asp-route-id="@plan.Id" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plan ?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-running"></i>
+                        <h3>Aucun plan d'entraînement</h3>
+                        <p>Créez votre premier programme sportif</p>
+                        <a href="@Url.Action("CreateWorkoutPlan", "Coach")" class="btn-primary">
+                            <i class="fas fa-plus"></i> Créer un Plan
+                        </a>
+                    </div>
+                }
+            </section>
+        </main>
+    </div>
+</body>
+</html>

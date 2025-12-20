@@ -1,0 +1,130 @@
+@model Fitness_Manager.Models.PlanSportif
+@{
+    ViewData["Title"] = "Créer un Plan d'Entraînement";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item active">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("WorkoutPlans", "Coach")" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>Créer un Plan d'Entraînement</h1>
+                        <p class="header-subtitle">Configurez un nouveau programme sportif</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="form-section">
+                <div class="form-container">
+                    <form method="post" asp-action="CreateWorkoutPlan">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="form-group">
+                            <label asp-for="Nom">
+                                <i class="fas fa-tag"></i> Nom du Plan *
+                            </label>
+                            <input asp-for="Nom" class="form-control" placeholder="Ex: Programme Prise de Masse" required />
+                            <span asp-validation-for="Nom" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description">
+                                <i class="fas fa-align-left"></i> Description
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Décrivez l'objectif et les caractéristiques du plan..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="DureeSemaines">
+                                    <i class="fas fa-calendar-alt"></i> Durée (semaines)
+                                </label>
+                                <input asp-for="DureeSemaines" type="number" class="form-control" placeholder="12" min="1" max="52" />
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Niveau">
+                                    <i class="fas fa-signal"></i> Niveau
+                                </label>
+                                <select asp-for="Niveau" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Débutant">Débutant</option>
+                                    <option value="Intermédiaire">Intermédiaire</option>
+                                    <option value="Avancé">Avancé</option>
+                                    <option value="Expert">Expert</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="@Url.Action("WorkoutPlans", "Coach")" class="btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Créer et Ajouter des Séances
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

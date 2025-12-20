@@ -1,0 +1,183 @@
+@model Fitness_Manager.Models.Client
+@{
+    ViewData["Title"] = "Ajouter un Client";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("Clients", "Coach")" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>Ajouter un Nouveau Client</h1>
+                        <p class="header-subtitle">Créer un compte client et l'assigner à votre coaching</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="form-section">
+                <div class="form-container">
+                    <form method="post" asp-action="AddClient">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Nom">
+                                    <i class="fas fa-user"></i> Nom *
+                                </label>
+                                <input asp-for="Nom" class="form-control" placeholder="Dupont" required />
+                                <span asp-validation-for="Nom" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Prenom">
+                                    <i class="fas fa-user"></i> Prénom *
+                                </label>
+                                <input asp-for="Prenom" class="form-control" placeholder="Jean" required />
+                                <span asp-validation-for="Prenom" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email">
+                                <i class="fas fa-envelope"></i> Email *
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="client@example.com" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Password">
+                                <i class="fas fa-lock"></i> Mot de Passe *
+                            </label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Mot de passe sécurisé" required />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <small class="text-muted">Le client pourra modifier ce mot de passe plus tard</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Age">
+                                    <i class="fas fa-birthday-cake"></i> Âge
+                                </label>
+                                <input asp-for="Age" type="number" class="form-control" min="10" max="120" placeholder="25" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Sexe">
+                                    <i class="fas fa-venus-mars"></i> Sexe
+                                </label>
+                                <select asp-for="Sexe" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Homme">Homme</option>
+                                    <option value="Femme">Femme</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Poids">
+                                    <i class="fas fa-weight"></i> Poids (kg)
+                                </label>
+                                <input asp-for="Poids" type="number" step="0.1" class="form-control" min="20" max="300" placeholder="70.0" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Taille">
+                                    <i class="fas fa-ruler-vertical"></i> Taille (cm)
+                                </label>
+                                <input asp-for="Taille" type="number" step="0.1" class="form-control" min="100" max="250" placeholder="175.0" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Objectif">
+                                <i class="fas fa-bullseye"></i> Objectif
+                            </label>
+                            <select asp-for="Objectif" class="form-control">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="Perte de poids">Perte de poids</option>
+                                <option value="Prise de muscle">Prise de muscle</option>
+                                <option value="Maintien de forme">Maintien de forme</option>
+                                <option value="Amélioration endurance">Amélioration endurance</option>
+                                <option value="Santé générale">Santé générale</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FrequenceEntrainement">
+                                <i class="fas fa-calendar-alt"></i> Fréquence d'Entraînement (fois/semaine)
+                            </label>
+                            <input asp-for="FrequenceEntrainement" type="number" class="form-control" min="1" max="7" placeholder="3" />
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="@Url.Action("Clients", "Coach")" class="btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-user-plus"></i> Créer le Client
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

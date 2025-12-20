@@ -1,0 +1,329 @@
+@model List<Fitness_Manager.Models.Aliment>
+@{
+    ViewData["Title"] = "Gérer les Aliments";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item active">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("NutritionPlans", "Coach")" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>@ViewBag.PlanName</h1>
+                        <p class="header-subtitle">Gérer les aliments du plan</p>
+                    </div>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+
+            <!-- Add Food Form -->
+            <section class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> Ajouter un Aliment</h2>
+                <form method="post" asp-action="AddFood" asp-route-planId="@ViewBag.PlanId">
+                    @Html.AntiForgeryToken()
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nom de l'aliment *</label>
+                            <input type="text" name="Nom" class="form-control" placeholder="Ex: Poulet grillé" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select name="Type" class="form-control">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="Protéine">Protéine</option>
+                                <option value="Glucide">Glucide</option>
+                                <option value="Légume">Légume</option>
+                                <option value="Fruit">Fruit</option>
+                                <option value="Produit laitier">Produit laitier</option>
+                                <option value="Matière grasse">Matière grasse</option>
+                                <option value="Boisson">Boisson</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Calories (kcal)</label>
+                            <input type="number" name="Calories" step="0.01" class="form-control" placeholder="150" />
+                        </div>
+                        <div class="form-group">
+                            <label>Protéines (g)</label>
+                            <input type="number" name="Proteines" step="0.01" class="form-control" placeholder="25" />
+                        </div>
+                        <div class="form-group">
+                            <label>Glucides (g)</label>
+                            <input type="number" name="Glucides" step="0.01" class="form-control" placeholder="30" />
+                        </div>
+                        <div class="form-group">
+                            <label>Lipides (g)</label>
+                            <input type="number" name="Lipides" step="0.01" class="form-control" placeholder="10" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Portion</label>
+                            <input type="text" name="Portion" class="form-control" placeholder="Ex: 100g, 1 pièce..." />
+                        </div>
+                        <div class="form-group">
+                            <label>Moment de consommation</label>
+                            <select name="MomentConsommation" class="form-control">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="Petit-déjeuner">Petit-déjeuner</option>
+                                <option value="Collation matin">Collation matin</option>
+                                <option value="Déjeuner">Déjeuner</option>
+                                <option value="Collation après-midi">Collation après-midi</option>
+                                <option value="Dîner">Dîner</option>
+                                <option value="Collation soir">Collation soir</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i> Ajouter l'Aliment
+                    </button>
+                </form>
+            </section>
+
+            <!-- Foods List -->
+            <section class="content-section">
+                <h2>Liste des Aliments</h2>
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="foods-grid">
+                        @foreach (var aliment in Model)
+                        {
+                            <div class="food-card">
+                                <div class="food-header">
+                                    <div>
+                                        <h3><i class="fas fa-utensils"></i> @aliment.Nom</h3>
+                                        @if (aliment.Type != null)
+                                        {
+                                            <span class="badge badge-success">@aliment.Type</span>
+                                        }
+                                    </div>
+                                    <form method="post" asp-action="DeleteFood" asp-route-id="@aliment.Id" asp-route-planId="@ViewBag.PlanId" style="display:inline;" onsubmit="return confirm('Supprimer cet aliment ?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="nutrition-facts">
+                                    @if (aliment.Calories.HasValue)
+                                    {
+                                        <div class="nutrition-item">
+                                            <i class="fas fa-fire"></i>
+                                            <span class="label">Calories:</span>
+                                            <span class="value">@aliment.Calories.Value.ToString("0.0") kcal</span>
+                                        </div>
+                                    }
+                                    @if (aliment.Proteines.HasValue)
+                                    {
+                                        <div class="nutrition-item">
+                                            <i class="fas fa-drumstick-bite"></i>
+                                            <span class="label">Protéines:</span>
+                                            <span class="value">@aliment.Proteines.Value.ToString("0.0")g</span>
+                                        </div>
+                                    }
+                                    @if (aliment.Glucides.HasValue)
+                                    {
+                                        <div class="nutrition-item">
+                                            <i class="fas fa-bread-slice"></i>
+                                            <span class="label">Glucides:</span>
+                                            <span class="value">@aliment.Glucides.Value.ToString("0.0")g</span>
+                                        </div>
+                                    }
+                                    @if (aliment.Lipides.HasValue)
+                                    {
+                                        <div class="nutrition-item">
+                                            <i class="fas fa-oil-can"></i>
+                                            <span class="label">Lipides:</span>
+                                            <span class="value">@aliment.Lipides.Value.ToString("0.0")g</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="food-meta">
+                                    @if (aliment.Portion != null)
+                                    {
+                                        <div class="meta-item">
+                                            <i class="fas fa-balance-scale"></i>
+                                            <span>@aliment.Portion</span>
+                                        </div>
+                                    }
+                                    @if (aliment.MomentConsommation != null)
+                                    {
+                                        <div class="meta-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>@aliment.MomentConsommation</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-apple-alt"></i>
+                        <h3>Aucun aliment</h3>
+                        <p>Ajoutez des aliments à ce plan nutritionnel</p>
+                    </div>
+                }
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+
+<style>
+.foods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.food-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.food-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.food-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.nutrition-facts {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.nutrition-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--gray-50);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+}
+
+.nutrition-item i {
+    color: var(--primary-color);
+}
+
+.nutrition-item .label {
+    color: var(--text-secondary);
+}
+
+.nutrition-item .value {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+}
+
+.food-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-100);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.meta-item i {
+    color: var(--success-color);
+}
+</style>

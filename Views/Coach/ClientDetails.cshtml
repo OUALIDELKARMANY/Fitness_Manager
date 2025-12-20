@@ -1,0 +1,227 @@
+@model Fitness_Manager.Models.Client
+@{
+    ViewData["Title"] = "Détails du Client";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("Clients", "Coach")" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>@Model.Prenom @Model.Nom</h1>
+                        <p class="header-subtitle">Profil et progression du client</p>
+                    </div>
+                    <a href="@Url.Action("EditClient", "Coach", new { id = Model.Id })" class="btn-primary">
+                        <i class="fas fa-edit"></i> Modifier Client
+                    </a>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+
+            <div class="details-layout">
+                <!-- Client Information -->
+                <section class="info-card">
+                    <h2><i class="fas fa-user"></i> Informations Personnelles</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p>@Model.Email</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Âge</label>
+                            <p>@(Model.Age?.ToString() ?? "Non renseigné")</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Date d'inscription</label>
+                            <p>@Model.DateInscription.ToShortDateString()</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Poids actuel</label>
+                            <p>@(Model.PoidsActuel?.ToString("0.0") ?? Model.Poids?.ToString("0.0") ?? "Non renseigné") kg</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Taille</label>
+                            <p>@(Model.Taille?.ToString("0.0") ?? "Non renseigné") cm</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Objectif</label>
+                            <p>@(Model.Objectif ?? "Non défini")</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Fréquence d'entraînement</label>
+                            <p>@(Model.FrequenceEntrainement?.ToString() ?? "Non défini") fois/semaine</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Assigned Plans -->
+                <section class="info-card">
+                    <h2><i class="fas fa-clipboard-list"></i> Plans Assignés</h2>
+                    
+                    <form method="post" asp-action="AssignPlans" class="assign-form">
+                        <input type="hidden" name="clientId" value="@Model.Id" />
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="form-group">
+                            <label for="workoutPlanId">
+                                <i class="fas fa-dumbbell"></i> Plan Sportif
+                            </label>
+                            <select name="workoutPlanId" id="workoutPlanId" class="form-control">
+                                <option value="">Aucun plan</option>
+                                @foreach (var plan in ViewBag.AvailableWorkoutPlans)
+                                {
+                                    <option value="@plan.Id" selected="@(plan.Id == Model.PlanSportifId ? "selected" : null)">
+                                        @plan.Nom - @plan.Niveau (@plan.DureeSemaines semaines)
+                                    </option>
+                                }
+                            </select>
+                            @if (Model.PlanSportif != null)
+                            {
+                                <small class="text-muted">
+                                    Actuellement: <strong>@Model.PlanSportif.Nom</strong> (@Model.PlanSportif.Seances.Count séances)
+                                </small>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nutritionPlanId">
+                                <i class="fas fa-apple-alt"></i> Plan Nutritionnel
+                            </label>
+                            <select name="nutritionPlanId" id="nutritionPlanId" class="form-control">
+                                <option value="">Aucun plan</option>
+                                @foreach (var plan in ViewBag.AvailableNutritionPlans)
+                                {
+                                    <option value="@plan.Id" selected="@(plan.Id == Model.PlanNutritionnelId ? "selected" : null)">
+                                        @plan.Nom - @plan.CaloriesJournalieres kcal/jour
+                                    </option>
+                                }
+                            </select>
+                            @if (Model.PlanNutritionnel != null)
+                            {
+                                <small class="text-muted">
+                                    Actuellement: <strong>@Model.PlanNutritionnel.Nom</strong> (@Model.PlanNutritionnel.Aliments.Count aliments)
+                                </small>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer les Plans
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Weight Progress -->
+                @if (Model.SuiviPoids.Any())
+                {
+                    <section class="info-card">
+                        <h2><i class="fas fa-weight"></i> Suivi du Poids</h2>
+                        <div class="weight-list">
+                            @foreach (var suivi in Model.SuiviPoids.OrderByDescending(s => s.Date).Take(5))
+                            {
+                                <div class="weight-item">
+                                    <span class="weight-date">@suivi.Date.ToShortDateString()</span>
+                                    <span class="weight-value">@suivi.Poids.ToString("0.0") kg</span>
+                                </div>
+                            }
+                        </div>
+                        <a href="@Url.Action("ClientProgress", "Coach", new { clientId = Model.Id })" class="btn-link">
+                            Voir graphique complet <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </section>
+                }
+
+                <!-- Recent Reports -->
+                <section class="info-card">
+                    <h2><i class="fas fa-file-alt"></i> Rapports</h2>
+                    @if (Model.Rapports.Any())
+                    {
+                        <div class="reports-list">
+                            @foreach (var rapport in Model.Rapports.OrderByDescending(r => r.DateCreation).Take(3))
+                            {
+                                <div class="report-item">
+                                    <div>
+                                        <strong>@rapport.Titre</strong>
+                                        <p class="text-muted">@rapport.DateCreation.ToShortDateString()</p>
+                                    </div>
+                                    <a href="@Url.Action("ViewReport", "Coach", new { id = rapport.Id })" class="btn-sm btn-secondary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Aucun rapport disponible</p>
+                    }
+                    <a href="@Url.Action("CreateReport", "Coach", new { clientId = Model.Id })" class="btn-primary btn-block mt-2">
+                        <i class="fas fa-plus"></i> Créer un Nouveau Rapport
+                    </a>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="~/js/coach-dashboard.js"></script>
+</body>
+</html>

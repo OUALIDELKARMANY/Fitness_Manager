@@ -1,0 +1,165 @@
+@model List<Fitness_Manager.Models.Seance>
+@{
+    ViewData["Title"] = "Gérer les Séances";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/coach-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fas fa-dumbbell"></i>
+                <h2>Fitness Manager</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="@Url.Action("Dashboard", "Coach")" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="@Url.Action("Clients", "Coach")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="@Url.Action("WorkoutPlans", "Coach")" class="nav-item active">
+                    <i class="fas fa-running"></i>
+                    <span>Plans d'Entraînement</span>
+                </a>
+                <a href="@Url.Action("NutritionPlans", "Coach")" class="nav-item">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Plans Nutritionnels</span>
+                </a>
+                <a href="@Url.Action("Reports", "Coach")" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Rapports</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="@Url.Action("Logout", "Account")" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <div>
+                        <a href="@Url.Action("WorkoutPlans", "Coach")" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <h1>@ViewBag.PlanName</h1>
+                        <p class="header-subtitle">Gérer les séances du plan</p>
+                    </div>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> @TempData["Success"]
+                </div>
+            }
+
+            <!-- Add Session Form -->
+            <section class="form-section card-compact">
+                <h2><i class="fas fa-plus-circle"></i> Ajouter une Séance</h2>
+                <form method="post" asp-action="AddSession" asp-route-planId="@ViewBag.PlanId" class="inline-form">
+                    @Html.AntiForgeryToken()
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" name="Nom" class="form-control" placeholder="Nom de la séance" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Jour" class="form-control" placeholder="Jour (ex: Lundi)" />
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="Ordre" class="form-control" placeholder="Ordre" min="1" />
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="DureeMinutes" class="form-control" placeholder="Durée (min)" min="1" />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i> Ajouter
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Sessions List -->
+            <section class="content-section">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <div class="sessions-list">
+                        @foreach (var seance in Model)
+                        {
+                            <div class="session-card">
+                                <div class="session-header">
+                                    <div>
+                                        <span class="session-order">@seance.Ordre</span>
+                                        <h3>@seance.Nom</h3>
+                                    </div>
+                                    <div class="session-meta">
+                                        @if (seance.Jour != null)
+                                        {
+                                            <span class="badge badge-primary">@seance.Jour</span>
+                                        }
+                                        @if (seance.DureeMinutes.HasValue)
+                                        {
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-clock"></i> @seance.DureeMinutes min
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                @if (seance.Description != null)
+                                {
+                                    <p class="session-description">@seance.Description</p>
+                                }
+
+                                <div class="session-stats">
+                                    <span><i class="fas fa-dumbbell"></i> @seance.Exercices.Count exercices</span>
+                                </div>
+
+                                <div class="session-actions">
+                                    <a href="@Url.Action("ManageExercises", "Coach", new { sessionId = seance.Id })" class="btn-secondary">
+                                        <i class="fas fa-list"></i> Gérer Exercices
+                                    </a>
+                                    <form method="post" asp-action="DeleteSession" asp-route-id="@seance.Id" asp-route-planId="@ViewBag.PlanId" style="display:inline;" onsubmit="return confirm('Supprimer cette séance ?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>Aucune séance</h3>
+                        <p>Ajoutez des séances à ce plan d'entraînement</p>
+                    </div>
+                }
+            </section>
+        </main>
+    </div>
+</body>
+</html>
