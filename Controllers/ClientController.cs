@@ -33,42 +33,93 @@ namespace Fitness_Manager.Controllers
         }
 
         // Gestion du profil
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null)
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == userId);
+            return View(client);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(string prenom, string nom, string email, 
+            decimal? poids, decimal? taille, int? age, string? sexe, string? objectif)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == userId);
+
+            if (client == null)
             {
-                var user = _context.Utilisateurs.FirstOrDefault(u => u.Id == int.Parse(userId));
-                return View(user);
+                return NotFound();
             }
-            return View();
+
+            // Mettre à jour les propriétés
+            client.Prenom = prenom;
+            client.Nom = nom;
+            client.Email = email;
+            client.Poids = poids;
+            client.Taille = taille;
+            client.Age = age;
+            client.Sexe = sexe;
+            client.Objectif = objectif;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Profil mis à jour avec succès!";
+            return RedirectToAction(nameof(Profile));
         }
 
         // Plan sportif
-        public IActionResult WorkoutPlan()
+        public async Task<IActionResult> WorkoutPlan()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // TODO: Récupérer le plan sportif de l'utilisateur depuis la base de données
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             
-            return View();
+            var client = await _context.Clients
+                .Include(c => c.PlanSportif)
+                    .ThenInclude(p => p!.Seances)
+                        .ThenInclude(s => s.Exercices)
+                .FirstOrDefaultAsync(c => c.Id == userId);
+            
+            return View(client);
         }
 
         // Plan nutritionnel
-        public IActionResult NutritionPlan()
+        public async Task<IActionResult> NutritionPlan()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // TODO: Récupérer le plan nutritionnel de l'utilisateur depuis la base de données
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             
-            return View();
+            var client = await _context.Clients
+                .Include(c => c.PlanNutritionnel)
+                    .ThenInclude(p => p!.Aliments)
+                .FirstOrDefaultAsync(c => c.Id == userId);
+            
+            return View(client);
         }
 
         // Progression
-        public IActionResult Progress()
+        public async Task<IActionResult> Progress()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // TODO: Récupérer les données de progression depuis la base de données
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             
-            return View();
+            var client = await _context.Clients
+                .Include(c => c.SuiviPoids.OrderBy(sp => sp.DateMesure))
+                .Include(c => c.PlanSportif)
+                    .ThenInclude(p => p!.Seances)
+                .FirstOrDefaultAsync(c => c.Id == userId);
+            
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            // Préparer les données pour la vue
+            ViewBag.Client = client;
+            ViewBag.PoidsActuel = client.SuiviPoids.LastOrDefault()?.Poids ?? client.Poids;
+            ViewBag.PoidsInitial = client.SuiviPoids.FirstOrDefault()?.Poids ?? client.Poids;
+            ViewBag.NombreMesures = client.SuiviPoids.Count;
+            ViewBag.NombreSeances = client.PlanSportif?.Seances.Count ?? 0;
+            
+            return View(client);
         }
     }
 }

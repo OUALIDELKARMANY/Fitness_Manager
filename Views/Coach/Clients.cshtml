@@ -126,7 +126,7 @@
                                     
                                     <div class="client-plans">
                                         <div class="plan-badge">
-                                            @if (client.PlanSportifId.HasValue)
+                                            @if (client.PlanSportifId != null)
                                             {
                                                 <span class="badge badge-success">
                                                     <i class="fas fa-dumbbell"></i> Plan Sportif
@@ -140,7 +140,7 @@
                                             }
                                         </div>
                                         <div class="plan-badge">
-                                            @if (client.PlanNutritionnelId.HasValue)
+                                            @if (client.PlanNutritionnelId != null)
                                             {
                                                 <span class="badge badge-success">
                                                     <i class="fas fa-apple-alt"></i> Plan Nutritionnel

@@ -1,4 +1,4 @@
-@model Utilisateur
+@model Fitness_Manager.Models.Client
 @{
     Layout = null;
     ViewData["Title"] = "Mon Profil";
@@ -116,6 +116,26 @@
         .page-subtitle {
             color: rgba(255, 255, 255, 0.6);
             font-size: 16px;
+        }
+
+        /* Success Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.4);
+            color: #28a745;
+        }
+
+        .alert i {
+            font-size: 20px;
         }
 
         /* Profile Card */
@@ -262,6 +282,14 @@
             <p class="page-subtitle">Gérez vos informations personnelles et définissez vos objectifs</p>
         </div>
 
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        }
+
         <div class="profile-card">
             <form method="post" action="/Client/UpdateProfile">
                 @Html.AntiForgeryToken()
@@ -286,56 +314,85 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Téléphone</label>
-                        <input type="tel" name="telephone" class="form-control" 
-                               placeholder="+212 6XX XXX XXX">
+                        <label class="form-label">Sexe</label>
+                        <select name="sexe" class="form-control">
+                            <option value="">Sélectionner</option>
+                            @if (Model?.Sexe != "Homme")
+                            {
+                                <option value="Homme">Homme</option>
+                            }
+                            @if (Model?.Sexe != "Femme")
+                            {
+                                <option value="Femme">Femme</option>
+                            }
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Poids (kg)</label>
                         <input type="number" step="0.1" name="poids" class="form-control" 
-                               placeholder="70.5">
+                               value="@Model?.Poids" placeholder="70.5">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Taille (cm)</label>
                         <input type="number" name="taille" class="form-control" 
-                               placeholder="175">
+                               value="@Model?.Taille" placeholder="175">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Âge</label>
                         <input type="number" name="age" class="form-control" 
-                               placeholder="25">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Sexe</label>
-                        <select name="sexe" class="form-control">
-                            <option value="">Sélectionner</option>
-                            <option value="Homme">Homme</option>
-                            <option value="Femme">Femme</option>
-                        </select>
+                               value="@Model?.Age" placeholder="25">
                     </div>
 
                     <div class="form-group full-width">
                         <label class="form-label">Objectif</label>
                         <select name="objectif" class="form-control">
                             <option value="">Sélectionner votre objectif</option>
-                            <option value="Perte de poids">Perte de poids</option>
-                            <option value="Prise de masse">Prise de masse musculaire</option>
-                            <option value="Maintien">Maintien de la forme</option>
-                            <option value="Endurance">Amélioration de l'endurance</option>
+                            <option value="Perte de poids" selected="@(Model?.Objectif == "Perte de poids")">Perte de poids</option>
+                            <option value="Prise de masse" selected="@(Model?.Objectif == "Prise de masse")">Prise de masse musculaire</option>
+                            <option value="Maintien" selected="@(Model?.Objectif == "Maintien")">Maintien de la forme</option>
+                            <option value="Endurance" selected="@(Model?.Objectif == "Endurance")">Amélioration de l'endurance</option>
                         </select>
                     </div>
                 </div>
+
+                @{
+                    // Calcul de l'IMC
+                    decimal? imc = null;
+                    if (Model?.Poids.HasValue == true && Model?.Taille.HasValue == true && Model.Taille > 0)
+                    {
+                        var tailleEnMetres = Model.Taille.Value / 100m;
+                        imc = Model.Poids.Value / (tailleEnMetres * tailleEnMetres);
+                    }
+
+                    // Calcul des calories journalières (Formule de Harris-Benedict révisée)
+                    decimal? calories = null;
+                    if (Model?.Poids.HasValue == true && Model?.Taille.HasValue == true && Model?.Age.HasValue == true && !string.IsNullOrEmpty(Model?.Sexe))
+                    {
+                        if (Model.Sexe == "Homme")
+                        {
+                            // Homme: 88.362 + (13.397 × poids en kg) + (4.799 × taille en cm) - (5.677 × âge en années)
+                            calories = 88.362m + (13.397m * Model.Poids.Value) + (4.799m * Model.Taille.Value) - (5.677m * Model.Age.Value);
+                        }
+                        else if (Model.Sexe == "Femme")
+                        {
+                            // Femme: 447.593 + (9.247 × poids en kg) + (3.098 × taille en cm) - (4.330 × âge en années)
+                            calories = 447.593m + (9.247m * Model.Poids.Value) + (3.098m * Model.Taille.Value) - (4.330m * Model.Age.Value);
+                        }
+                        
+                        // Ajustement selon le niveau d'activité (sédentaire par défaut)
+                        calories = calories * 1.2m;
+                    }
+                }
 
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">
                             <i class="fas fa-weight"></i>
                         </div>
-                        <div class="stat-value">--</div>
+                        <div class="stat-value">@(imc.HasValue ? imc.Value.ToString("F1") : "--")</div>
                         <div class="stat-label">IMC</div>
                     </div>
 
@@ -343,7 +400,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-fire"></i>
                         </div>
-                        <div class="stat-value">--</div>
+                        <div class="stat-value">@(calories.HasValue ? calories.Value.ToString("F0") : "--")</div>
                         <div class="stat-label">Calories/jour</div>
                     </div>
 
@@ -351,7 +408,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-bullseye"></i>
                         </div>
-                        <div class="stat-value">--</div>
+                        <div class="stat-value">@(string.IsNullOrEmpty(Model?.Objectif) ? "--" : Model.Objectif)</div>
                         <div class="stat-label">Objectif</div>
                     </div>
                 </div>

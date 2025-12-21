@@ -197,23 +197,56 @@ namespace Fitness_Manager.Controllers
             return View(plans);
         }
 
-        public IActionResult CreateWorkoutPlan()
+        public async Task<IActionResult> CreateWorkoutPlan()
         {
+            var coachId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            
+            // Récupérer tous les clients pour le dropdown
+            ViewBag.Clients = await _context.Clients
+                .OrderBy(c => c.Nom)
+                .ThenBy(c => c.Prenom)
+                .ToListAsync();
+            
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateWorkoutPlan(PlanSportif plan)
+        public async Task<IActionResult> CreateWorkoutPlan(PlanSportif plan, int? clientId)
         {
             if (ModelState.IsValid)
             {
                 _context.PlansSportifs.Add(plan);
                 await _context.SaveChangesAsync();
                 
-                TempData["Success"] = "Plan d'entraînement créé avec succès!";
+                // Si un client a été sélectionné, assigner automatiquement le plan
+                if (clientId.HasValue)
+                {
+                    var client = await _context.Clients.FindAsync(clientId.Value);
+                    if (client != null)
+                    {
+                        client.PlanSportifId = plan.Id;
+                        await _context.SaveChangesAsync();
+                        TempData["Success"] = $"Plan d'entraînement créé et assigné à {client.Prenom} {client.Nom}!";
+                    }
+                    else
+                    {
+                        TempData["Success"] = "Plan d'entraînement créé avec succès!";
+                    }
+                }
+                else
+                {
+                    TempData["Success"] = "Plan d'entraînement créé avec succès!";
+                }
+                
                 return RedirectToAction(nameof(ManageSessions), new { planId = plan.Id });
             }
+            
+            // Recharger les clients en cas d'erreur
+            ViewBag.Clients = await _context.Clients
+                .OrderBy(c => c.Nom)
+                .ThenBy(c => c.Prenom)
+                .ToListAsync();
             
             return View(plan);
         }
@@ -441,23 +474,56 @@ namespace Fitness_Manager.Controllers
             return View(plans);
         }
 
-        public IActionResult CreateNutritionPlan()
+        public async Task<IActionResult> CreateNutritionPlan()
         {
+            var coachId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            
+            // Récupérer tous les clients pour le dropdown
+            ViewBag.Clients = await _context.Clients
+                .OrderBy(c => c.Nom)
+                .ThenBy(c => c.Prenom)
+                .ToListAsync();
+            
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateNutritionPlan(PlanNutritionnel plan)
+        public async Task<IActionResult> CreateNutritionPlan(PlanNutritionnel plan, int? clientId)
         {
             if (ModelState.IsValid)
             {
                 _context.PlansNutritionnels.Add(plan);
                 await _context.SaveChangesAsync();
                 
-                TempData["Success"] = "Plan nutritionnel créé avec succès!";
+                // Si un client a été sélectionné, assigner automatiquement le plan
+                if (clientId.HasValue)
+                {
+                    var client = await _context.Clients.FindAsync(clientId.Value);
+                    if (client != null)
+                    {
+                        client.PlanNutritionnelId = plan.Id;
+                        await _context.SaveChangesAsync();
+                        TempData["Success"] = $"Plan nutritionnel créé et assigné à {client.Prenom} {client.Nom}!";
+                    }
+                    else
+                    {
+                        TempData["Success"] = "Plan nutritionnel créé avec succès!";
+                    }
+                }
+                else
+                {
+                    TempData["Success"] = "Plan nutritionnel créé avec succès!";
+                }
+                
                 return RedirectToAction(nameof(ManageFoods), new { planId = plan.Id });
             }
+            
+            // Recharger les clients en cas d'erreur
+            ViewBag.Clients = await _context.Clients
+                .OrderBy(c => c.Nom)
+                .ThenBy(c => c.Prenom)
+                .ToListAsync();
             
             return View(plan);
         }

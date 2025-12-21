@@ -191,7 +191,7 @@
                                         <td>@(client.Email ?? "")</td>
                                         <td>@client.DateInscription.ToShortDateString()</td>
                                         <td>
-                                            @if (client.PlanSportifId != null && client.PlanSportifId.HasValue)
+                                            @if (client.PlanSportifId != null)
                                             {
                                                 <span class="badge badge-success">Assigné</span>
                                             }
@@ -201,7 +201,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (client.PlanNutritionnelId != null && client.PlanNutritionnelId.HasValue)
+                                            @if (client.PlanNutritionnelId != null)
                                             {
                                                 <span class="badge badge-success">Assigné</span>
                                             }

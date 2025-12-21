@@ -1,3 +1,4 @@
+@model Fitness_Manager.Models.Client
 @{
     Layout = null;
     ViewData["Title"] = "Plan Sportif";
@@ -117,6 +118,44 @@
             font-size: 16px;
         }
 
+        .plan-info {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .plan-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 10px;
+        }
+
+        .plan-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .plan-meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .meta-item i {
+            color: #D4AF37;
+        }
+
         /* No Plan Message */
         .no-plan {
             background: rgba(255, 255, 255, 0.05);
@@ -169,7 +208,7 @@
 
         .session-header {
             display: flex;
-            justify-co: space-between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
@@ -186,6 +225,12 @@
             border-radius: 20px;
             font-size: 12px;
             color: #D4AF37;
+        }
+
+        .session-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 20px;
         }
 
         .exercise-list {
@@ -213,6 +258,7 @@
             justify-content: center;
             font-size: 18px;
             color: #1a1a2e;
+            flex-shrink: 0;
         }
 
         .exercise-info {
@@ -227,29 +273,6 @@
         .exercise-details {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.6);
-        }
-
-        .validate-btn {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            padding: 12px 24px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .validate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
-        }
-
-        .validate-btn.completed {
-            background: rgba(40, 167, 69, 0.3);
-            cursor: default;
         }
 
         @@media (max-width: 768px) {
@@ -291,45 +314,119 @@
             <p class="page-subtitle">Consultez vos séances et validez vos progrès</p>
         </div>
 
-        <!-- Message si pas de plan assigné -->
-        <div class="no-plan">
-            <div class="no-plan-icon">
-                <i class="fas fa-clipboard-list"></i>
-            </div>
-            <h2 class="no-plan-title">Aucun plan sportif assigné</h2>
-            <p class="no-plan-text">
-                Votre coach n'a pas encore créé de plan sportif pour vous.<br>
-                Contactez votre coach pour obtenir un programme personnalisé adapté à vos objectifs.
-            </p>
-        </div>
-
-        <!-- Exemple de structure pour quand le plan sera disponible -->
-        <!-- 
-        <div class="workout-grid">
-            <div class="session-card">
-                <div class="session-header">
-                    <div class="session-day">Lundi - Haut du corps</div>
-                    <div class="session-badge">60 min</div>
+        @if (Model?.PlanSportif != null)
+        {
+            <!-- Plan Info -->
+            <div class="plan-info">
+                <h2 class="plan-title">@Model.PlanSportif.Nom</h2>
+                @if (!string.IsNullOrEmpty(Model.PlanSportif.Description))
+                {
+                    <p class="plan-description">@Model.PlanSportif.Description</p>
+                }
+                <div class="plan-meta">
+                    @if (Model.PlanSportif.DureeSemaines.HasValue)
+                    {
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Durée: @Model.PlanSportif.DureeSemaines semaines</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.PlanSportif.Niveau))
+                    {
+                        <div class="meta-item">
+                            <i class="fas fa-signal"></i>
+                            <span>Niveau: @Model.PlanSportif.Niveau</span>
+                        </div>
+                    }
+                    <div class="meta-item">
+                        <i class="fas fa-list"></i>
+                        <span>@Model.PlanSportif.Seances.Count séance(s)</span>
+                    </div>
                 </div>
-
-                <ul class="exercise-list">
-                    <li class="exercise-item">
-                        <div class="exercise-icon">
-                            <i class="fas fa-dumbbell"></i>
-                        </div>
-                        <div class="exercise-info">
-                            <div class="exercise-name">Développé couché</div>
-                            <div class="exercise-details">4 séries × 12 répétitions</div>
-                        </div>
-                    </li>
-                </ul>
-
-                <button class="validate-btn">
-                    <i class="fas fa-check"></i> Valider la séance
-                </button>
             </div>
-        </div>
-        -->
+
+            @if (Model.PlanSportif.Seances.Any())
+            {
+                <!-- Sessions Grid -->
+                <div class="workout-grid">
+                    @foreach (var seance in Model.PlanSportif.Seances.OrderBy(s => s.Ordre))
+                    {
+                        <div class="session-card">
+                            <div class="session-header">
+                                <div class="session-day">@seance.Nom</div>
+                                @if (seance.DureeMinutes.HasValue)
+                                {
+                                    <div class="session-badge">@seance.DureeMinutes min</div>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(seance.Description))
+                            {
+                                <p class="session-description">@seance.Description</p>
+                            }
+
+                            @if (seance.Exercices.Any())
+                            {
+                                <ul class="exercise-list">
+                                    @foreach (var exercice in seance.Exercices)
+                                    {
+                                        <li class="exercise-item">
+                                            <div class="exercise-icon">
+                                                <i class="fas fa-dumbbell"></i>
+                                            </div>
+                                            <div class="exercise-info">
+                                                <div class="exercise-name">@exercice.Nom</div>
+                                                <div class="exercise-details">
+                                                    @if (exercice.Sets.HasValue && exercice.Repetitions.HasValue)
+                                                    {
+                                                        <span>@exercice.Sets séries × @exercice.Repetitions répétitions</span>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(exercice.Instructions))
+                                                    {
+                                                        <span> - @exercice.Instructions</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p style="color: rgba(255, 255, 255, 0.5); font-style: italic;">Aucun exercice ajouté pour cette séance</p>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-plan">
+                    <div class="no-plan-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h2 class="no-plan-title">Plan vide</h2>
+                    <p class="no-plan-text">
+                        Votre coach a créé ce plan mais n'a pas encore ajouté de séances.<br>
+                        Les séances apparaîtront ici dès qu'elles seront ajoutées.
+                    </p>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Message si pas de plan assigné -->
+            <div class="no-plan">
+                <div class="no-plan-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h2 class="no-plan-title">Aucun plan sportif assigné</h2>
+                <p class="no-plan-text">
+                    Votre coach n'a pas encore créé de plan sportif pour vous.<br>
+                    Contactez votre coach pour obtenir un programme personnalisé adapté à vos objectifs.
+                </p>
+            </div>
+        }
     </div>
 </body>
 </html>
